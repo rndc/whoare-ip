@@ -1,0 +1,18 @@
+#!/bin/bash
+# Whois IP Range/Prefix  v0.1a
+# 30/07/2012 ~ -idk-
+# RNDC - http://rndc.or.id/wiki
+
+TMP='bgp.raw';
+echo "[Querying bgp.he.net]"
+RAW=`GET http://bgp.he.net/ip/$1 > $TMP`; $RAW
+AS=`grep "/AS" $TMP | cut -d "<" -f3 | cut -d ">" -f2 | head -1`;
+echo "[+] AS Number Origin  : $AS"
+DESC=`grep descr: $TMP | cut -d ":" -f2 | head -1 | tr -d ' '`;
+echo "[+] Network Info      : $DESC"
+RLIST=`GET http://bgp.he.net/$AS#_prefixes | grep "/net/" | cut -d ">" -f2 | cut -d "<" -f1`;
+echo "[+] IP Range Prefixes : "
+echo "$RLIST"
+rm -f $TMP
+
+# EOF
